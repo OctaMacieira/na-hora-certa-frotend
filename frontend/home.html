@@ -70,32 +70,120 @@
             </tr>
         </thead>
         <tbody>
-            <!-- Submitted data will appear here -->
         </tbody>
     </table>
 
     <script>
-        document.getElementById('submitButton').addEventListener('click', function() {
-            const form = document.getElementById('productForm');
-            const tableBody = document.getElementById('officesTable').querySelector('tbody');
+        function populateTable() {
+        fetch('http://127.0.0.1:5000/get-last-10-rooms')
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Failed to fetch records');
+                }
+            })
+            .then(data => {
+                console.log(data);
+                const tableBody = document.getElementById('officesTable').querySelector('tbody');
+                tableBody.innerHTML = '';
 
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>${form.zipCode.value}</td>
-                <td>${form.address.value}</td>
-                <td>${form.size.value}</td>
-                <td>${form.documentsOk.checked ? 'Yes' : 'No'}</td>
-                <td>${form.condominiumFee.value}</td>
-                <td>${form.iptu.value}</td>
-                <td>${form.bathrooms.value}</td>
-                <td>${form.parkingSpace.checked ? 'Yes' : 'No'}</td>
-                <td>${form.reception.checked ? 'Yes' : 'No'}</td>
-                <td>${form.doctorsOffice.checked ? 'Yes' : 'No'}</td>
-                <td><button class="deleteButton">Delete</button></td>
-            `;
-            tableBody.appendChild(row);
+                data.forEach(record => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${record.zip_code}</td>
+                        <td>${record.address}</td>
+                        <td>${record.size}</td>
+                        <td>${record.documents_ok ? 'Yes' : 'No'}</td>
+                        <td>${record.condominium_fee}</td>
+                        <td>${record.iptu}</td>
+                        <td>${record.number_of_bathrooms}</td>
+                        <td>${record.has_parking_space ? 'Yes' : 'No'}</td>
+                        <td>${record.has_reception ? 'Yes' : 'No'}</td>
+                        <td>${record.doctors_office ? 'Yes' : 'No'}</td>
+                        <td><button class="deleteButton">Delete</button></td>
+                    `;
+                    tableBody.appendChild(row);
 
-            form.reset();
+                    row.querySelector('.deleteButton').addEventListener('click', function() {
+                        fetch(`http://127.0.0.1:5000/delete-room`, {
+                            method: 'DELETE',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ id: record.id })
+                        })
+                        .then(response => {
+                            if (response.ok) {
+                                console.log('Record deleted successfully');
+                                row.remove();
+                            } else {
+                                throw new Error('Failed to delete record');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
+                    });
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    
+        function createnewroom() {
+            document.getElementById('submitButton').addEventListener('click', function() {
+                const form = document.getElementById('productForm');
+        
+                // Collect form data
+                const formData = {
+                    zip_code: form.zipCode.value,
+                    address: form.address.value,
+                    size: form.size.value,
+                    documents_ok: form.documentsOk.checked,
+                    condominium_fee: form.condominiumFee.value,
+                    iptu: form.iptu.value,
+                    number_of_bathrooms: form.bathrooms.value,
+                    has_parking_space: form.parkingSpace.checked,
+                    has_reception: form.reception.checked,
+                    doctors_office: form.doctorsOffice.checked
+                };
+        
+                // Make API call to submit data
+                fetch('http://127.0.0.1:5000/create-new-room', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                })
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        throw new Error('Failed to submit data');
+                    }
+                })
+                .then(data => {
+                    console.log('Success:', data);
+        
+                    // Refresh the table after submission
+                    populateTable();
+        
+                    // Reset the form
+                    form.reset();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            });
+        }
+        
+    
+        document.addEventListener('DOMContentLoaded', () => {
+            populateTable();
+            createnewroom();
         });
     </script>
 </body>
