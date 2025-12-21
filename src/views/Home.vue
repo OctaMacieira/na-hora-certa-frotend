@@ -68,14 +68,12 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useRoomService } from '../composables/useRoomService'
+import { mockRooms } from '../data/mockRooms.js'
 import BaseButton from '../components/BaseButton.vue'
 import RoomCard from '../components/RoomCard.vue'
 
 const router = useRouter()
 const { getAllRooms } = useRoomService()
-
-// Dados mock vazios por padrão (podem ser preenchidos se existirem)
-const mockRooms = []
 
 const allRooms = ref([])
 const loading = ref(true)
@@ -117,51 +115,17 @@ const goToPage = (page) => {
   window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
-// Carregar salas da API
-const loadRooms = async () => {
+// Carregar salas dos dados mockados
+const loadRooms = () => {
   loading.value = true
   error.value = null
   
-  // Timeout de 10 segundos
-  const timeoutId = setTimeout(() => {
-    if (loading.value) {
-      loading.value = false
-      if (mockRooms.length > 0) {
-        error.value = 'Tempo limite excedido ao carregar as salas. Verifique sua conexão.'
-        allRooms.value = [...mockRooms]
-      } else {
-        error.value = 'Não foi possível carregar as salas. Tente novamente mais tarde.'
-      }
-    }
-  }, 10000)
-  
-  try {
-    const data = await getAllRooms()
-    clearTimeout(timeoutId)
-    
-    if (data && Array.isArray(data) && data.length > 0) {
-      allRooms.value = data
-    } else {
-      // API retornou vazio, tentar mock
-      if (mockRooms.length > 0) {
-        allRooms.value = [...mockRooms]
-      } else {
-        error.value = 'Nenhuma sala disponível no momento.'
-      }
-    }
-  } catch (err) {
-    clearTimeout(timeoutId)
-    console.error('Erro ao carregar salas da API:', err)
-    
-    // Tentar carregar dados mock como fallback
-    if (mockRooms.length > 0) {
-      allRooms.value = [...mockRooms]
-    } else {
-      error.value = 'Não foi possível conectar ao servidor. Tente novamente mais tarde.'
-    }
-  } finally {
+  // Simulando um pequeno delay para feedback visual
+  setTimeout(() => {
+    allRooms.value = [...mockRooms]
     loading.value = false
-  }
+    console.log('Dados mockados carregados:', mockRooms.length, 'salas')
+  }, 300)
 }
 
 // Navegar para detalhes da sala

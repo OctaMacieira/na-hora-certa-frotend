@@ -123,6 +123,7 @@
 import { ref, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useRoomService } from '../composables/useRoomService'
+import { mockRooms } from '../data/mockRooms.js'
 import BaseButton from '../components/BaseButton.vue'
 import ContactModal from '../components/ContactModal.vue'
 
@@ -130,63 +131,28 @@ const router = useRouter()
 const route = useRoute()
 const { getRoomById } = useRoomService()
 
-// Dados mock vazios por padrão (podem ser preenchidos se existirem)
-const mockRooms = []
-
 const room = ref(null)
 const loading = ref(true)
 const error = ref(null)
 const roomId = route.params.id
 const showContactModal = ref(false)
 
-// Carregar detalhes da sala
-const loadRoomDetails = async () => {
+// Carregar detalhes da sala dos dados mockados
+const loadRoomDetails = () => {
   loading.value = true
   error.value = null
   
-  // Timeout de 10 segundos
-  const timeoutId = setTimeout(() => {
-    if (loading.value) {
-      loading.value = false
-      if (mockRooms.length > 0) {
-        error.value = 'Tempo limite excedido ao carregar os detalhes da sala.'
-        room.value = getMockRoom(roomId)
-      } else {
-        error.value = 'Não foi possível carregar os detalhes da sala. Tente novamente mais tarde.'
-      }
-    }
-  }, 10000)
-  
-  try {
-    const data = await getRoomById(roomId)
-    clearTimeout(timeoutId)
-    
-    if (data) {
-      room.value = data
-    } else {
-      // API não retornou dados, tentar mock
-      if (mockRooms.length > 0) {
-        room.value = getMockRoom(roomId)
-      } else {
-        error.value = 'Sala não encontrada.'
-      }
-    }
-  } catch (err) {
-    clearTimeout(timeoutId)
-    console.error('Erro ao carregar detalhes da sala:', err)
-    
-    // Tentar carregar dados mock como fallback
-    if (mockRooms.length > 0) {
-      room.value = getMockRoom(roomId)
-      if (!room.value) {
-        error.value = 'Sala não encontrada.'
-      }
-    } else {
-      error.value = 'Não foi possível conectar ao servidor. Tente novamente mais tarde.'
-    }
-  } finally {
+  // Simulando um pequeno delay para feedback visual
+  setTimeout(() => {
+    room.value = getMockRoom(roomId)
     loading.value = false
-  }
+    
+    if (!room.value) {
+      error.value = 'Sala não encontrada.'
+    } else {
+      console.log('Dados mockados carregados para sala:', roomId)
+    }
+  }, 300)
 }
 
 // Calcular valor total
