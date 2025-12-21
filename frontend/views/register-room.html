@@ -1,0 +1,165 @@
+<div class="register-container">
+    <h2 class="page-title">Cadastrar Nova Sala</h2>
+    
+    <!-- Success Message -->
+    <div ng-if="success" class="success-message">
+        <p>✓ Sala cadastrada com sucesso! Redirecionando...</p>
+    </div>
+    
+    <!-- Error Message -->
+    <div ng-if="error" class="error-message">
+        <p>{{ error }}</p>
+    </div>
+    
+    <!-- Formulário -->
+    <form name="roomForm" ng-submit="submitForm()" novalidate class="register-form">
+        
+        <!-- CEP -->
+        <div class="form-group">
+            <label for="zip_code">CEP *</label>
+            <input 
+                type="text" 
+                id="zip_code" 
+                name="zip_code"
+                ng-model="room.zip_code" 
+                ng-blur="searchAddress()"
+                placeholder="00000-000"
+                maxlength="9"
+                required
+                class="form-input">
+            <span ng-show="roomForm.zip_code.$touched && roomForm.zip_code.$error.required" class="error-text">
+                CEP é obrigatório
+            </span>
+        </div>
+        
+        <!-- Endereço -->
+        <div class="form-group">
+            <label for="address">Endereço Completo *</label>
+            <input 
+                type="text" 
+                id="address" 
+                name="address"
+                ng-model="room.address" 
+                placeholder="Rua, Número, Bairro, Cidade"
+                required
+                class="form-input">
+            <span ng-show="roomForm.address.$touched && roomForm.address.$error.required" class="error-text">
+                Endereço é obrigatório
+            </span>
+        </div>
+        
+        <!-- Tamanho -->
+        <div class="form-group">
+            <label for="size">Tamanho (m²) *</label>
+            <input 
+                type="number" 
+                id="size" 
+                name="size"
+                ng-model="room.size" 
+                placeholder="50"
+                min="1"
+                required
+                class="form-input">
+            <span ng-show="roomForm.size.$touched && roomForm.size.$error.required" class="error-text">
+                Tamanho é obrigatório
+            </span>
+        </div>
+        
+        <!-- Taxa de Condomínio -->
+        <div class="form-group">
+            <label for="condominium_fee">Taxa de Condomínio (R$) *</label>
+            <input 
+                type="number" 
+                id="condominium_fee" 
+                name="condominium_fee"
+                ng-model="room.condominium_fee" 
+                placeholder="500.00"
+                step="0.01"
+                min="0"
+                required
+                class="form-input">
+            <span ng-show="roomForm.condominium_fee.$touched && roomForm.condominium_fee.$error.required" class="error-text">
+                Taxa de condomínio é obrigatória
+            </span>
+        </div>
+        
+        <!-- IPTU -->
+        <div class="form-group">
+            <label for="iptu">IPTU (R$) *</label>
+            <input 
+                type="number" 
+                id="iptu" 
+                name="iptu"
+                ng-model="room.iptu" 
+                placeholder="200.00"
+                step="0.01"
+                min="0"
+                required
+                class="form-input">
+            <span ng-show="roomForm.iptu.$touched && roomForm.iptu.$error.required" class="error-text">
+                IPTU é obrigatório
+            </span>
+        </div>
+        
+        <!-- Número de Banheiros -->
+        <div class="form-group">
+            <label for="number_of_bathrooms">Número de Banheiros *</label>
+            <input 
+                type="number" 
+                id="number_of_bathrooms" 
+                name="number_of_bathrooms"
+                ng-model="room.number_of_bathrooms" 
+                placeholder="1"
+                min="1"
+                required
+                class="form-input">
+        </div>
+        
+        <!-- Checkboxes -->
+        <div class="form-group checkbox-group">
+            <label class="checkbox-label">
+                <input type="checkbox" ng-model="room.has_parking_space">
+                <span>Possui Vaga de Estacionamento</span>
+            </label>
+        </div>
+        
+        <div class="form-group checkbox-group">
+            <label class="checkbox-label">
+                <input type="checkbox" ng-model="room.has_reception">
+                <span>Possui Recepção</span>
+            </label>
+        </div>
+        
+        <div class="form-group checkbox-group">
+            <label class="checkbox-label">
+                <input type="checkbox" ng-model="room.doctors_office">
+                <span>Adequado para Consultório Médico</span>
+            </label>
+        </div>
+        
+        <div class="form-group checkbox-group">
+            <label class="checkbox-label">
+                <input type="checkbox" ng-model="room.documents_ok">
+                <span>Documentação em Ordem</span>
+            </label>
+        </div>
+        
+        <!-- Botões -->
+        <div class="form-actions">
+            <button 
+                type="submit" 
+                class="btn btn-primary" 
+                ng-disabled="roomForm.$invalid || loading">
+                <span ng-if="!loading">Cadastrar Sala</span>
+                <span ng-if="loading">Cadastrando...</span>
+            </button>
+            <button 
+                type="button" 
+                class="btn btn-secondary" 
+                ng-click="resetForm()"
+                ng-disabled="loading">
+                Limpar Formulário
+            </button>
+        </div>
+    </form>
+</div>

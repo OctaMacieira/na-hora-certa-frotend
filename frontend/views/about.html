@@ -1,0 +1,33 @@
+<div class="about-container">
+    <h2 class="page-title">{{ pageTitle }}</h2>
+    
+    <div class="about-content">
+        <section class="about-section">
+            <h3>{{ aboutInfo.title }}</h3>
+            <p class="about-description">{{ aboutInfo.description }}</p>
+        </section>
+        
+        <section class="about-section">
+            <h3>Nossa Missão</h3>
+            <p class="about-description">{{ aboutInfo.mission }}</p>
+        </section>
+        
+        <section class="about-section">
+            <h3>Nossos Serviços</h3>
+            <ul class="services-list">
+                <li ng-repeat="service in aboutInfo.services" class="service-item">
+                    <span class="checkmark">✓</span> {{ service }}
+                </li>
+            </ul>
+        </section>
+        
+        <section class="about-section cta-section">
+            <h3>Pronto para começar?</h3>
+            <p>Cadastre sua sala ou encontre o espaço perfeito para seu negócio!</p>
+            <div class="cta-buttons">
+                <a href="#!/cadastrar-sala" class="btn btn-primary">Cadastrar Sala</a>
+                <a href="#!/home" class="btn btn-secondary">Ver Salas Disponíveis</a>
+            </div>
+        </section>
+    </div>
+</div>

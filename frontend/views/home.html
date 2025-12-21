@@ -1,0 +1,47 @@
+<div class="home-container">
+    <h2 class="page-title">Salas Disponíveis para Aluguel</h2>
+    
+    <!-- Loading -->
+    <div ng-if="loading" class="loading">
+        <p>Carregando salas...</p>
+    </div>
+    
+    <!-- Error -->
+    <div ng-if="error" class="error-message">
+        <p>{{ error }}</p>
+        <button class="btn btn-primary" ng-click="loadRooms()">Tentar Novamente</button>
+    </div>
+    
+    <!-- Grade de Cards -->
+    <div ng-if="!loading && !error" class="rooms-grid">
+        <div ng-repeat="room in rooms" class="room-card" ng-click="viewRoomDetails(room.id)">
+            <div class="card-header">
+                <h3 class="neighborhood">{{ getNeighborhood(room.address) }}</h3>
+            </div>
+            <div class="card-body">
+                <p class="address">{{ room.address }}</p>
+                <div class="card-details">
+                    <span class="detail-item">
+                        <i class="icon">📐</i> {{ room.size }}m²
+                    </span>
+                    <span class="detail-item">
+                        <i class="icon">🚻</i> {{ room.number_of_bathrooms }} banheiro(s)
+                    </span>
+                    <span class="detail-item" ng-if="room.has_parking_space">
+                        <i class="icon">🚗</i> Vaga
+                    </span>
+                </div>
+            </div>
+            <div class="card-footer">
+                <p class="price">R$ {{ calculateTotalValue(room) }}/mês</p>
+                <button class="btn btn-secondary">Ver Detalhes</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Mensagem quando não há salas -->
+    <div ng-if="!loading && !error && rooms.length === 0" class="no-rooms">
+        <p>Nenhuma sala disponível no momento.</p>
+        <a href="#!/cadastrar-sala" class="btn btn-primary">Cadastrar Primeira Sala</a>
+    </div>
+</div>
