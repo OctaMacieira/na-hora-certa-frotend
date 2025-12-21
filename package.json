@@ -1,13 +1,22 @@
 {
   "name": "na-hora-certa",
-  "version": "1.0.0",
-  "description": "Sistema de aluguel de salas - Angular.js",
+  "version": "2.0.0",
+  "description": "Sistema de aluguel de salas - Vue.js",
+  "type": "module",
   "scripts": {
-    "start": "http-server frontend -p 8000 -c-1 -o",
-    "serve": "http-server frontend -p 8000 -c-1 -o"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "start": "vite"
   },
   "private": true,
+  "dependencies": {
+    "vue": "^3.4.0",
+    "vue-router": "^4.2.0",
+    "axios": "^1.6.0"
+  },
   "devDependencies": {
-    "http-server": "^14.1.1"
+    "@vitejs/plugin-vue": "^5.0.0",
+    "vite": "^5.0.0"
   }
 }
