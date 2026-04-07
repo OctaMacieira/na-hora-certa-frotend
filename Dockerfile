@@ -3,6 +3,12 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
+# Declara o argumento de build (pode ser sobrescrito com --build-arg)
+ARG VITE_API_BASE_URL=http://localhost:5000/api
+
+# Expõe o ARG como variável de ambiente para o Vite durante o build
+ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
+
 COPY package*.json ./
 RUN npm ci --omit=dev=false
 
