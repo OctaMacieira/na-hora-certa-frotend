@@ -37,7 +37,8 @@ na-hora-certa-frontend/
 │   │   ├── Home.vue             # Lista de salas
 │   │   ├── About.vue            # Quem somos
 │   │   ├── RegisterRoom.vue     # Cadastro de sala
-│   │   └── RoomDetails.vue      # Detalhes da sala
+│   │   ├── RoomDetails.vue      # Detalhes da sala
+│   │   └── EditRoom.vue         # Edição de sala
 │   │
 │   ├── router/                   # Configuração de rotas
 │   │   └── index.js             # Vue Router
@@ -76,6 +77,13 @@ na-hora-certa-frontend/
 - Visualização completa de informações
 - Breakdown de custos
 - Grade de características
+- Botão de acesso à edição da sala
+
+### 5. Editar Sala (`/sala/:id/editar`)
+- Formulário pré-preenchido com os dados atuais da sala
+- Busca automática de endereço via CEP (ViaCEP)
+- Integração com endpoint `PUT /api/rooms/:id`
+- Redireciona para os detalhes da sala após salvar
 
 ---
 
@@ -98,6 +106,7 @@ na-hora-certa-frontend/
 | `/quem-somos` | `About.vue` | Sobre a empresa |
 | `/cadastrar-sala` | `RegisterRoom.vue` | Cadastro |
 | `/sala/:id` | `RoomDetails.vue` | Detalhes |
+| `/sala/:id/editar` | `EditRoom.vue` | Edição |
 
 ---
 
@@ -135,6 +144,45 @@ class Room:
     has_reception: bool
     doctors_office: bool
 ```
+
+---
+
+## 📮 Integração com ViaCEP
+
+O projeto utiliza a API pública **ViaCEP** para preenchimento automático do endereço a partir do CEP nos formulários de cadastro e edição de sala.
+
+### Como funciona
+
+1. O usuário digita o CEP no campo correspondente
+2. Ao sair do campo (`blur`), a aplicação consulta a API do ViaCEP
+3. Se o CEP for válido, o campo de endereço é preenchido automaticamente com logradouro, bairro, cidade e estado
+
+### Endpoint utilizado
+
+```
+GET https://viacep.com.br/ws/{cep}/json/
+```
+
+### Exemplo de resposta
+
+```json
+{
+  "cep": "01310-100",
+  "logradouro": "Avenida Paulista",
+  "bairro": "Bela Vista",
+  "localidade": "São Paulo",
+  "uf": "SP",
+  "erro": false
+}
+```
+
+> **Nota:** Quando o CEP não é encontrado, a API retorna `{ "erro": true }`. A aplicação trata esse caso e não sobrescreve o campo de endereço.
+
+### Características
+
+- API **gratuita** e **sem autenticação**
+- Suporta CEPs no formato `00000000` ou `00000-000`
+- Disponível em: [https://viacep.com.br](https://viacep.com.br)
 
 ---
 

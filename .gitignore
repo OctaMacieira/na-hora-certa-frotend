@@ -29,6 +29,7 @@ yarn-error.log
 .history/*
 
 # Miscellaneous
+.env*
 .vite
 .sass-cache/
 /connect.lock

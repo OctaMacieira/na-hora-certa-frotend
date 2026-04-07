@@ -68,7 +68,6 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useRoomService } from '../composables/useRoomService'
-import { mockRooms } from '../data/mockRooms.js'
 import BaseButton from '../components/BaseButton.vue'
 import RoomCard from '../components/RoomCard.vue'
 
@@ -115,17 +114,20 @@ const goToPage = (page) => {
   window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
-// Carregar salas dos dados mockados
-const loadRooms = () => {
+// Carregar salas da API
+const loadRooms = async () => {
   loading.value = true
   error.value = null
-  
-  // Simulando um pequeno delay para feedback visual
-  setTimeout(() => {
-    allRooms.value = [...mockRooms]
+
+  try {
+    const data = await getAllRooms()
+    allRooms.value = data
+  } catch (err) {
+    console.error('Erro ao carregar salas:', err)
+    error.value = 'Não foi possível carregar as salas. Verifique se o servidor está disponível.'
+  } finally {
     loading.value = false
-    console.log('Dados mockados carregados:', mockRooms.length, 'salas')
-  }, 300)
+  }
 }
 
 // Navegar para detalhes da sala

@@ -3,6 +3,7 @@ import Home from '../views/Home.vue'
 import About from '../views/About.vue'
 import RegisterRoom from '../views/RegisterRoom.vue'
 import RoomDetails from '../views/RoomDetails.vue'
+import EditRoom from '../views/EditRoom.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -30,6 +31,12 @@ const router = createRouter({
       path: '/sala/:id',
       name: 'room-details',
       component: RoomDetails,
+      props: true
+    },
+    {
+      path: '/sala/:id/editar',
+      name: 'edit-room',
+      component: EditRoom,
       props: true
     }
   ]

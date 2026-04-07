@@ -108,6 +108,14 @@
             <BaseButton variant="secondary" @click="goBack">Ver Outras Salas</BaseButton>
           </div>
         </section>
+
+        <!-- Gerenciamento -->
+        <section class="details-section">
+          <h3>Gerenciamento</h3>
+          <div class="action-buttons">
+            <BaseButton variant="secondary" @click="goToEdit">Editar Sala</BaseButton>
+          </div>
+        </section>
       </div>
     </div>
     
@@ -123,7 +131,6 @@
 import { ref, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useRoomService } from '../composables/useRoomService'
-import { mockRooms } from '../data/mockRooms.js'
 import BaseButton from '../components/BaseButton.vue'
 import ContactModal from '../components/ContactModal.vue'
 
@@ -137,22 +144,19 @@ const error = ref(null)
 const roomId = route.params.id
 const showContactModal = ref(false)
 
-// Carregar detalhes da sala dos dados mockados
-const loadRoomDetails = () => {
+// Carregar detalhes da sala da API
+const loadRoomDetails = async () => {
   loading.value = true
   error.value = null
-  
-  // Simulando um pequeno delay para feedback visual
-  setTimeout(() => {
-    room.value = getMockRoom(roomId)
+
+  try {
+    room.value = await getRoomById(roomId)
+  } catch (err) {
+    console.error('Erro ao carregar sala:', err)
+    error.value = 'Sala não encontrada ou servidor indisponível.'
+  } finally {
     loading.value = false
-    
-    if (!room.value) {
-      error.value = 'Sala não encontrada.'
-    } else {
-      console.log('Dados mockados carregados para sala:', roomId)
-    }
-  }, 300)
+  }
 }
 
 // Calcular valor total
@@ -173,6 +177,11 @@ const goBack = () => {
   router.push('/home')
 }
 
+// Ir para edição da sala
+const goToEdit = () => {
+  router.push({ name: 'edit-room', params: { id: roomId } })
+}
+
 // Extrair bairro do endereço
 const getNeighborhood = () => {
   if (room.value && room.value.address) {
@@ -180,16 +189,6 @@ const getNeighborhood = () => {
     return parts.length > 1 ? parts[parts.length - 2].trim() : 'Não informado'
   }
   return 'Não informado'
-}
-
-// Buscar sala nos dados mock
-const getMockRoom = (id) => {
-  if (!mockRooms || mockRooms.length === 0) {
-    return null
-  }
-  
-  const foundRoom = mockRooms.find(r => r.id === id)
-  return foundRoom || null
 }
 
 // Inicializar ao montar componente
